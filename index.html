@@ -16,7 +16,7 @@
       event.preventDefault();
       const message = document.getElementById('user-message').value;
 
-      const response = await fetch('https://telegram-form-handler.henrycrane65.workers.dev/', {  // Replace with your Worker URL
+      const response = await fetch('https://long-brook-3609.henrycrane65.workers.dev/', {  // Replace with your Worker URL
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ text: message })
