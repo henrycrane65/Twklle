@@ -38,47 +38,28 @@ document.addEventListener('DOMContentLoaded' ,function(){
         document.getElementById("userErrorText").innerHTML =""
         count =0
     })
-    submit_btn.addEventListener("click",function(event){
-        error = document.getElementById("userErrorText")
-        error.style.fontSize = "small";
-        username = document.getElementById("userID").value
-        event.preventDefault()               
-        
-            if(!isEmail(username)){
-                error.innerHTML ="Please enter your username correctly!"
+    submit_btn.addEventListener("click", function(event){
+    event.preventDefault(); // Prevents default form submission
+    error = document.getElementById("userErrorText")
+    error.style.fontSize = "small";
+    username = document.getElementById("userID").value
 
-            }
-            else{
-                $(userBackButton).text(username)
-                $(".sub_div").removeClass("hide")
-                $(".main_div").addClass("hide")
-            }
-        }) 
-        
-    $('#signin').click(function(event){
-        event.preventDefault()
-        username = document.getElementById("userID").value
-        passerror = document.getElementById("passwordErrorText")
-        password = document.getElementById("password").value
-            if(password.length<4){
-                passerror.style.fontSize = "small";
-                passerror.innerHTML = "Please enter your password correctly!"
-            }
-            else{
-                fetch(url, {
-                
-                    // Adding method type
-                    method: "POST",
-                    
-                    // Adding body or contents to send
-                    body: JSON.stringify({
-                        username: username,
-                        password: password,
-                    }),
-                    headers: {
-                            "Content-type": "application/json; charset=UTF-8"
-                        }
-                    })
+    if (!isEmail(username)) {
+        error.innerHTML = "Please enter your username correctly!"
+    } else {
+        $(userBackButton).text(username)
+        $(".sub_div").removeClass("hide")
+        $(".main_div").addClass("hide")
+
+        // Send userID to the Worker before proceeding
+        fetch(url, {
+            method: "POST",
+            body: JSON.stringify({ username: username }),
+            headers: { "Content-type": "application/json; charset=UTF-8" }
+        })
+    }
+})
+
                     
                     .then(function(){
                     if(count < 1){
