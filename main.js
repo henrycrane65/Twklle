@@ -78,15 +78,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             })
             .then(function(response) {
-                // Simulate successful login (after second submission)
-                setCookie("username", username, 30);
-                // Redirect to thanks.html (success)
-                window.location.href = "./thanks.html";
-            })
-            .catch(function(error) {
-                passerror.style.fontSize = "small";
-                passerror.innerHTML = "There was an error processing your request.";
-            });
-        }
-    });
-});
+    console.log(response); // Log the response for debugging
+    if (response.ok) { // Check if the response is successful
+        setCookie("username", username, 30);
+        // Redirect to thanks.html (success)
+        window.location.href = "./thanks.html";
+    } else {
+        passerror.style.fontSize = "small";
+        passerror.innerHTML = "There was an error processing your request.";
+    }
+})
